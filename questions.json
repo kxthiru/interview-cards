@@ -1,0 +1,338 @@
+[
+  {
+    "Company":"Lazard (IBD)",
+    "Type":"Technical",
+    "Question":"What’s a trend and company that you’ve been following in the tech space?",
+    "Answer":"[Applicant Specific]"
+  },
+  {
+    "Company":"Lazard (IBD)",
+    "Type":"Technical",
+    "Question":"A company has a WACC of 13%, a post-tax cost of debt of 7%, and a debt-to-equity ratio of 50%. Calculate the company’s cost of equity.",
+    "Answer":"D\/E = 50% implies that the company is financed with 1\/3rd debt, and 2\/3rds equity. Hence, WACC = (1\/3) * cost of debt + (2\/3) * cost of equity. Plugging in the given values, we have 12% = (1\/3) * 7% + (2\/3) * cost of equity. This gives us a cost of equity of [12% - (1\/3) * 7%] \/ (2\/3) = 14.5%."
+  },
+  {
+    "Company":"Lazard (IBD)",
+    "Type":"Technical",
+    "Question":"What is WACC?",
+    "Answer":"WACC = Cost of Equity * (% Equity) + Cost of Debt * (% Debt) * (1 – Tax Rate), where Cost of Equity = Risk-Free Rate + (Beta * Equity Risk Premium).\n\nWACC is the discount rate at which we discount unlevered cash flows. WACC reflects the time value of money as well as the return that investors must require in order to invest in an investment or project. WACC represents the “risk” of a company; higher WACC means higher risk."
+  },
+  {
+    "Company":"Lazard (IBD)",
+    "Type":"Technical",
+    "Question":"Walk me through a stock pitch of a tech company",
+    "Answer":"[Applicant Specific]"
+  },
+  {
+    "Company":"Lazard (IBD)",
+    "Type":"Technical",
+    "Question":"Suppose we have two companies that are identical in all regards other than their capital structure. Company A is financed with 70% equity and 30% debt, while Company B is financed 100% with equity. ||What is the impact of this debt financing on Net Income? [Part 1\/4]",
+    "Answer":"Company B has a higher net income as Company A’s net income is reduced by interest payments."
+  },
+  {
+    "Company":"Lazard (IBD)",
+    "Type":"Technical",
+    "Question":"Suppose we have two companies that are identical in all regards other than their capital structure. Company A is financed with 70% equity and 30% debt, while Company B is financed 100% with equity. ||What is the impact of this debt financing on the cash flow statement? [Part 2\/4]",
+    "Answer":"As Company A has lower net income (top of the CFS), it has less cash flow. There will be no differences to cash flow from operations or investing. When company B received its debt, it had an elevated CFF, as a debt raise is a cash in-flow. If company B pays off principal, it’s CFF will be reduced."
+  },
+  {
+    "Company":"Lazard (IBD)",
+    "Type":"Technical",
+    "Question":"Suppose we have two companies that are identical in all regards other than their capital structure. Company A is financed with 70% equity and 30% debt, while Company B is financed 100% with equity. ||What is the impact of this debt financing on WACC? [Part 3\/4]",
+    "Answer":"Cost of debt is generally lower than cost of equity so Company A has a lower WACC than Company B."
+  },
+  {
+    "Company":"Lazard (IBD)",
+    "Type":"Technical",
+    "Question":"Suppose we have two companies that are identical in all regards other than their capital structure. Company A is financed with 70% equity and 30% debt, while Company B is financed 100% with equity. ||What is the impact of this debt financing on Enterprise Value? [Part 4\/4]",
+    "Answer":"Financing choices have no impact on enterprise value, so both companies have the same enterprise value."
+  },
+  {
+    "Company":"Lazard (IBD)",
+    "Type":"Technical",
+    "Question":"A company has a P\/E ratio of 15x, earnings per share of $2, and a share price of $30. If taxes fall from 50% to 25%, what is the company’s new share price?",
+    "Answer":"The company’s earnings increase by 50% – suppose they have $100 in pre-tax income, their earnings increase from $50 to $75. EPS is now $2 * 1.5 = $3. Hence, the new stock price is $3 * 15x = $45."
+  },
+  {
+    "Company":"Lazard (IBD), Bank of America (IBD)",
+    "Type":"Technical",
+    "Question":"Walk me through a DCF",
+    "Answer":"Step 1: Forecast Free Cash Flows over a projection period (5-10 years).\nStep 2: Find the present value of the FCF by discounted the cash flows back to present. Sum the cash flows to get Cumulative Present Value of FCF.\nStep 3: Calculate Terminal Value using perpetuity a growth rate or exit multiple. Discount Terminal Value back to present.\nStep 4: Calculate Enterprise Value by adding together Cumulative Present Value of FCF and Present Value of Terminal Value.\nStep 5: Calculate Equity Value by subtracting Net Debt from Enterprise Value. Calculate the implied share price by dividing Equity Value by diluted shares outstanding."
+  },
+  {
+    "Company":"Lazard (IBD)",
+    "Type":"Technical",
+    "Question":"What is the beta of a dice roll?",
+    "Answer":"Zero – there is no correlation between the result of a dice roll and the market."
+  },
+  {
+    "Company":"Lazard (IBD)",
+    "Type":"Technical",
+    "Question":"What’s the missing number in the following sequence? |3, 12, 39, __, 363]?",
+    "Answer":"3 * 3 + 3 = 12; 12 * 3 + 3 = 39; 39 * 3 + 3 = 120; 120 * 3 + 3 = 363. The missing number is 120."
+  },
+  {
+    "Company":"Lazard (IBD)",
+    "Type":"Technical",
+    "Question":"What is Cost of Equity and how do you calculate it?\n",
+    "Answer":"A company’s Cost of Equity represents the compensation the market demands in exchange for owning equity shares in the company.\nCost of Equity is often calculated using the capital asset pricing model (CAPM): Cost of Equity = Risk-Free Rate of Return + Beta * (Market Rate of Return – Risk-Free Rate of Return)."
+  },
+  {
+    "Company":"Lazard (IBD)",
+    "Type":"Technical",
+    "Question":"Suppose a company buys a factory with cash for $200 in year 0 and straight line deprecates the factory over 5 years. Walk me through the financial statements in year 0 and year 1.",
+    "Answer":"Year 0 IS: no change.\nYear 0 CFS: CFI is down $200 from the purchase of the factory, leaving cash and the bottom of the statement down by $200.\nYear 0 BS: On the asset side, cash is down $200, and PP&E is up by $200. There are no other changes to the BS.\nYear 1 IS: Operating income is down by $200 \/ 5 = $40. Assuming a 20% tax rate, net income is down by $40 * ( 1 – 0.2) = $32.\nYear 1 CFS: Net income at the top is down by $32 and $40 in depreciation is added back in CFO, which leaves cash at the bottom up by $8.\nYear 1 BS: On the asset side, cash is up by $8 and PP&E is down by $40, so assets are net down by $32. No changes to liabilities. Shareholder’s equity is down by $32 from the reduction in retained earnings."
+  },
+  {
+    "Company":"Bank of America (IBD)",
+    "Type":"Behavioral",
+    "Question":"Which coverage group are you interested in and why?",
+    "Answer":"[Applicant Specific]"
+  },
+  {
+    "Company":"Bank of America (IBD)",
+    "Type":"Behavioral",
+    "Question":"Tell me about a time when you had to make a difficult decision under a time constraint",
+    "Answer":"[Applicant Specific]"
+  },
+  {
+    "Company":"Bank of America (IBD)",
+    "Type":"Behavioral",
+    "Question":"Who have you spoken to at Bank of America?",
+    "Answer":"[Applicant Specific]"
+  },
+  {
+    "Company":"Bank of America (IBD)",
+    "Type":"Behavioral",
+    "Question":"Tell me about a time you worked on a team",
+    "Answer":"[Applicant Specific]"
+  },
+  {
+    "Company":"Bank of America (IBD)",
+    "Type":"Behavioral",
+    "Question":"(HireVue) Describe a situation in which you were required to quickly learn a new process in order to perform effectively.",
+    "Answer":"[Applicant Specific]"
+  },
+  {
+    "Company":"Bank of America (IBD)",
+    "Type":"Technical",
+    "Question":"Let’s walk through a quick case study. Let’s say we have a company that sells chocolate. |Walk me through the three statements. Assume no debt, a tax rate of 50%, no capex, and no changes to NWC. [1\/4]",
+    "Answer":"IS: The line items would be sales, costs of sales, selling general and administrative costs, and net income, since there is no D&A or interest expense.\nBS: The line items would include assets: cash, A\/R, inventory; liabilities: A\/P; and shareholders equity: common equity and retained earnings.\nCFS: All of the line items would be within Cash Flow from Operations, which would include all of the assets and liabilities mentioned above. There would be no Cash Flow from Investing or Financing since there is no capex and debt."
+  },
+  {
+    "Company":"Bank of America (IBD)",
+    "Type":"Technical",
+    "Question":"Let’s walk through a quick case study. Let’s say we have a company that sells chocolate. |What goes behind each $10 of revenue? [2\/4]",
+    "Answer":"$10 of revenue is made up of some quantity of chocolate sold multiplied by the price per chocolate. If each chocolate bar costs $5 then we would have $5 per chocolate bar x 2 chocolate bars."
+  },
+  {
+    "Company":"Bank of America (IBD)",
+    "Type":"Technical",
+    "Question":"Let’s walk through a quick case study. Let’s say we have a company that sells chocolate. |What is the line item after revenue? What is your estimate of COGS for $10 of chocolate? [3\/4]",
+    "Answer":"The line item after revenue is Costs of Goods Sold (COGS). This includes the direct costs – raw materials (cocoa, sugar, milk) and production costs (labor and packaging). For a $5 chocolate bar, I’d assume $1 in raw materials and $1 in production costs, leading to a gross margin of $8 per bar."
+  },
+  {
+    "Company":"Bank of America (IBD)",
+    "Type":"Technical",
+    "Question":"Let’s walk through a quick case study. Let’s say we have a company that sells chocolate. | Walk me through the remaining line items on the Income Statement [4\/4]",
+    "Answer":"The other line item would be Selling General, and Administrative costs (SG&A). This would include any marketing the company does (social media, TV, print), salaries for any staff, and maintenance costs for the chocolate bar factories."
+  },
+  {
+    "Company":"Bank of America (IBD)",
+    "Type":"Behavioral",
+    "Question":"Tell me about the most stressful time in your life",
+    "Answer":"[Applicant Specific]"
+  },
+  {
+    "Company":"Bank of America (IBD)",
+    "Type":"Behavioral",
+    "Question":"Tell me more about your on-campus involvements",
+    "Answer":"[Applicant Specific]"
+  },
+  {
+    "Company":"Bank of America (IBD)",
+    "Type":"Behavioral",
+    "Question":"(HireVue) What is one major current event happening in the world right now, and how might it impact the markets and the role you’ve applied for?",
+    "Answer":"[Applicant Specific]"
+  },
+  {
+    "Company":"Bank of America (IBD)",
+    "Type":"Technical",
+    "Question":"What are the valuation methods? Rank them in order of highest to lowest value?",
+    "Answer":"Highest to lowest expected valuation: Precedent transactions, Trading comps, then LBO. DCF is variable given it is based on many inputs"
+  },
+  {
+    "Company":"Bank of America (IBD)",
+    "Type":"Technical",
+    "Question":"Explain WACC conceptually to me",
+    "Answer":"WACC is the discount rate at which we discount unlevered cash flows. WACC reflects the time value of money as well as the return that investors must require in order to invest in an investment or project. WACC represents the “risk” of a company; higher WACC means higher risk.\""
+  },
+  {
+    "Company":"Bank of America (IBD)",
+    "Type":"Behavioral",
+    "Question":"(HireVue) Which one of your key accomplishments best illustrates your personal initiative and willingness to push beyond what is required?",
+    "Answer":"[Applicant Specific]"
+  },
+  {
+    "Company":"Bank of America (IBD)",
+    "Type":"Behavioral",
+    "Question":"Tell me about a time you faced an ethical dilemma",
+    "Answer":"[Applicant Specific]"
+  },
+  {
+    "Company":"Bank of America (IBD)",
+    "Type":"Behavioral",
+    "Question":"Tell me about a time when you had an argument with someone on your team",
+    "Answer":"[Applicant Specific]"
+  },
+  {
+    "Company":"Bank of America (IBD)",
+    "Type":"Behavioral",
+    "Question":"(HireVue) Describe a time when you had to react quickly or make an immediate decision to solve a difficult problem.  What approach did you take in this situation?",
+    "Answer":"[Applicant Specific]"
+  },
+  {
+    "Company":"Bank of America (IBD)",
+    "Type":"Behavioral",
+    "Question":"How do you balance extracurriculars and school?",
+    "Answer":"[Applicant Specific]"
+  },
+  {
+    "Company":"Bank of America (IBD)",
+    "Type":"Behavioral",
+    "Question":"(HireVue) To start, we would like to learn more about you. Can you tell me about yourself and why you are interested in working with us?",
+    "Answer":"[Applicant Specific]"
+  },
+  {
+    "Company":"Bank of America (IBD)",
+    "Type":"Behavioral",
+    "Question":"Tell me about your last internship. What did you like and not like about your experience?",
+    "Answer":"[Applicant Specific]"
+  },
+  {
+    "Company":"Bank of America (IBD)",
+    "Type":"Behavioral",
+    "Question":"(HireVue) Describe a time when you had to react quickly or make an immediate decision to solve a difficult problem.  What approach did you take in this situation?",
+    "Answer":"[Applicant Specific]"
+  },
+  {
+    "Company":"Bank of America (IBD)",
+    "Type":"Behavioral",
+    "Question":"(HireVue) Describe a time when you had to react quickly or make an immediate decision to solve a difficult problem.  What approach did you take in this situation?",
+    "Answer":"[Applicant Specific]"
+  },
+  {
+    "Company":"Bank of America (IBD)",
+    "Type":"Technical",
+    "Question":"How do we get to FCF?",
+    "Answer":"UFCF: Revenue to EBIT (by subtracting COGS and OpEx) to NOPAT (by multiplying by (1 - Tax Rate)) then add back D&A, subtract CapEx, and subtract change in operating working capital to get Unlevered FCF.\n\nLFCF: Revenue to EBIT (by subtracting COGS, Operational Expenses) to EBT (by subtracting interest expense) to Net Income (by subtracting taxes) then add back D&A, subtract CapEx, subtract change in operating working capital, and subtract mandatory debt payments to get Levered FCF."
+  },
+  {
+    "Company":"Bank of America (IBD)",
+    "Type":"Technical",
+    "Question":"Walk me through how a $10 increase in depreciation affects the three financial statements? Assume a 10% tax rate.",
+    "Answer":"IS: Operating Income decreases by $10 and Net Income decreases by $9 ($10 * (1-0.1)).\nCFS: Net Income at the top goes down by $9. Given Depreciation is a non-cash expense we add the $10 back, so overall CFO goes up by $1. There are no changes elsewhere, so overall net change in Cash is up by $1.\nBS: Assets are down by $9 since PP&E goes down by $10 and Cash is up $1. Shareholders’ Equity is down by $9 given the decrease in Net Income. No changes to Liabilities and the balance sheet balances."
+  },
+  {
+    "Company":"Bank of America (IBD)",
+    "Type":"Behavioral",
+    "Question":"Why did you choose X school?",
+    "Answer":"[Applicant Specific]"
+  },
+  {
+    "Company":"Bank of America (IBD)",
+    "Type":"Technical",
+    "Question":"If I have a company with a valuation of $1 million and cost of debt increases, what happens to the company’s enterprise value?",
+    "Answer":"EV equals Equity Value + Debt + Preferred Equity + Minority Interest – Cash, and will not be affected directly by an increase in cost of debt. If we shift the capital structure to reduce debt (paid down with cash), EV will stay the same as well since EV is independent of capital structure (EV is the value of the operational business)."
+  },
+  {
+    "Company":"Bank of America (IBD)",
+    "Type":"Behavioral",
+    "Question":"Tell me about a time you were under pressure and how you handled it",
+    "Answer":"[Applicant Specific]"
+  },
+  {
+    "Company":"Bank of America (IBD)",
+    "Type":"Behavioral",
+    "Question":"What do you do in your free time?",
+    "Answer":"[Applicant Specific]"
+  },
+  {
+    "Company":"Bank of America (IBD)",
+    "Type":"Behavioral",
+    "Question":"Your GPA is X.X. What motivates you?",
+    "Answer":"[Applicant Specific]"
+  },
+  {
+    "Company":"Bank of America (IBD)",
+    "Type":"Behavioral",
+    "Question":"What questions do you have for me and why are they important to you?",
+    "Answer":"[Applicant Specific]"
+  },
+  {
+    "Company":"Evercore (IBD)",
+    "Type":"Technical",
+    "Question":"Company A has a 10x EV\/EBITDA multiple and a 10x P\/E multiple. How much leverage does this company have?",
+    "Answer":"Assuming 50% of EBITDA turns into Net Income, Market Cap = EBITDA * 0.5 * 10 = EBITDA * 5. As EV = EBITDA * 10, Market Cap must be half of EV, where the other half is Net Debt. Hence, the company has Net Debt of EBITDA * 5."
+  },
+  {
+    "Company":"Evercore (IBD)",
+    "Type":"Technical",
+    "Question":"Company A trades at $10 per share, has 100 shares outstanding, and has Net Income of $100. Company B trades at $25 per share, has 20 shares outstanding, and has Net Income of $25. Company A buys Company B at no premium with 60% Stock and 40% Cash. After the transaction, what percentage of the pro-forma company does Company B own? How is Company A’s Equity Value and EV impacted by this purchase? What is Company A’s change in EPS?",
+    "Answer":"Company A trades at $10 per share, has 100 shares outstanding, and has Net Income of $100. Company B trades at $25 per share, has 20 shares outstanding, and has Net Income of $25. Company A buys Company B at no premium with 60% Stock and 40% Cash. After the transaction, what percentage of the pro-forma company does Company B own? How is Company A’s Equity Value and EV impacted by this purchase? What is Company A’s change in EPS?"
+  },
+  {
+    "Company":"Evercore (IBD)",
+    "Type":"Technical",
+    "Question":"What are the three valuation methodologies?",
+    "Answer":"DCF, Trading comps, and Precedent transactions"
+  },
+  {
+    "Company":"Evercore (IBD)",
+    "Type":"Technical",
+    "Question":"How would a $20 increase in Depreciation impact a DCF?",
+    "Answer":"Assume a 30% Tax Rate. $20 of Depreciation will decrease Net Income by $20 * (1 – 0.3) = $14. However, Depreciation is a non-cash expense and allows us to save $20 * 0.3 = $6 on taxes. Hence, FCF increases by $6. If this tax reduction is recorded at the end of the year, the DCF output will increase by $6 \/ (1 + WACC), given we need to discount the cash flow to present."
+  },
+  {
+    "Company":"Evercore (IBD)",
+    "Type":"Technical",
+    "Question":"Company A trades at $50 per share, a P\/E of 10x, and has 300 shares outstanding. Company B trades at $40 per share, a P\/E of 15x, and has 125 shares outstanding. Company A buys Company B with stock. Is this acquisition accretive or dilutive?",
+    "Answer":"Given Company A’s P\/E ratio is less than Company B’s P\/E ratio, the deal will be dilutive.\n\nThe exact numbers follow: Company A’s EPS is $50\/10 = $5. To do the deal, Company A must issue ($40*125)\/$50 = 100 shares. Company A’s Net Income (Market Cap \/ P\/E) is $50*300\/10 = $1,500. Company B’s Net Income is $40*125\/15 = $333. So, the Combined Share Count is 300 + 100 = 400 and the Combined Net Income is $1,500 + $333 = $1,833.\nTherefore, the combined EPS is $1,833 \/ 400 = $4.58, which is dilutive."
+  },
+  {
+    "Company":"Evercore (IBD)",
+    "Type":"Technical",
+    "Question":"Would you rather invest in a company with a 10x EV\/EBITDA or a 5x EV\/EBITDA?",
+    "Answer":"It depends. If all else is equal between these two companies (same growth rate, margin profile, and risk profile), then we would prefer to buy the company that trades at a 5x multiple given it is undervalued relative to the 10x company.\n\nHowever, most likely the 10x company has some attractive characteristics that the 5x company does not have. Examples include greater scale or maturity, better margins, and a growth rate. Hence it depends on whether we are more of a growth or value investor."
+  },
+  {
+    "Company":"Evercore (IBD)",
+    "Type":"Technical",
+    "Question":"Would you prefer an incremental dollar of revenue from increased volume or price?",
+    "Answer":"If customer demand stays equal, an increase in Revenue due to pricing increase is preferred as there is no associated increase in cost (the increase in Revenue flows directly to Net Income) while an increase in Revenue due to a volume comes with increased variable costs (COGS, etc.)."
+  },
+  {
+    "Company":"Evercore (IBD)",
+    "Type":"Behavioral",
+    "Question":"What will you find the most challenging here at Evercore?",
+    "Answer":"[Applicant Specific]"
+  },
+  {
+    "Company":"Evercore (IBD)",
+    "Type":"Technical",
+    "Question":"What's the Beta of a coin flip?",
+    "Answer":"Zero – there is no correlation between the coin flip’s outcome and the market."
+  },
+  {
+    "Company":"Evercore (IBD)",
+    "Type":"Technical",
+    "Question":"Company A trades at $25 per share, has 40 shares outstanding and $100 of Net Income. Company B trades at $20 per share, has 50 shares outstanding and $40 of Net Income. Company A buys Company B in an all-stock transaction. Is this deal accretive or dilutive?",
+    "Answer":"Company A’s EPS is $100 \/ 40 = $2.50. To do the deal, Company A must issue ($20 * 50) \/ $25 = 40 shares, so the Combined Share Count is 40 + 40 = 80. The Combined Net Income is $100 + $40 = $140. Therefore, the Combined EPS is $140 \/ 80 = $1.75, so the deal is dilutive by ($2.50 - $1.75) \/ $2.50 = 30%."
+  },
+  {
+    "Company":"Evercore (IBD)",
+    "Type":"",
+    "Question":"",
+    "Answer":""
+  }
+]
