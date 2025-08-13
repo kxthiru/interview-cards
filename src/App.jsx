@@ -1,9 +1,10 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react'
-import bundledQuestions from './data/questions.json';
+import bundledQuestions from './data/questions.json'
 
 // ------- Configurable card sizing -------
-const CARD_MIN_H = 240         // base min height (px) when showing the question
-const CARD_EXPANDED_MIN_H = 360 // expanded min height (px) when revealing the answer
+const CARD_MIN_H = 260        // base min height (px) when showing the question
+const CARD_EXPANDED_MIN_H = 400 // expanded min height (px) when revealing the answer
+const SWIPE_THRESHOLD = 50     // px swipe distance to trigger next/prev
 
 function shuffleArray(arr) {
   const a = [...arr]
@@ -36,7 +37,6 @@ function normalizeRecords(rows) {
     .filter((r) => r.Question && r.Answer)
 }
 
-// NEW: split a Company cell into multiple companies (comma/semicolon/newline separated)
 function splitCompanies(value) {
   const raw = String(value || '')
   return raw
@@ -46,31 +46,31 @@ function splitCompanies(value) {
 }
 
 export default function App() {
+  // Data & filters
   const [allData, setAllData] = useState([])
   const [company, setCompany] = useState('all')
   const [type, setType] = useState('all')
   const [sortBy, setSortBy] = useState('none')
   const [randomized, setRandomized] = useState(false)
 
-  // Views
-  const [singleView, setSingleView] = useState(false) // one card at a time with Prev/Next
-  const [studyMode, setStudyMode] = useState(false)   // run-through mode (adds autoplay)
+  // Views — default to SINGLE CARD view
+  const [singleView, setSingleView] = useState(true) // default ON
 
   // Card interaction
   const [revealAnswer, setRevealAnswer] = useState(false)
   const [index, setIndex] = useState(0)
-  const [autoplay, setAutoplay] = useState(false)
-  const [autoplaySeconds, setAutoplaySeconds] = useState(6)
   const [error, setError] = useState('')
-  const timerRef = useRef(null)
 
-  // Load default dataset from /public/questions.json (relative path works on GitHub Pages)
+  // Touch/swipe state
+  const touchStartX = useRef(null)
+  const touchDeltaX = useRef(0)
+
+  // Always load bundled data (works on GitHub Pages)
   useEffect(() => {
-    // Always load the bundled data so the GitHub-hosted build has Q&A baked in
-    setAllData(normalizeRecords(bundledQuestions));
-  }, []);
+    setAllData(normalizeRecords(bundledQuestions))
+  }, [])
 
-  // Build the selectable company list by splitting multi-company cells
+  // Build company list from split tags
   const companies = useMemo(() => {
     const set = new Set()
     for (const d of allData) splitCompanies(d.Company).forEach((c) => set.add(c))
@@ -98,120 +98,74 @@ export default function App() {
     return list
   }, [allData, company, type, sortBy, randomized])
 
-  // Reset position when the filtered list or view changes
+  // Reset position when list/view changes
   useEffect(() => {
     setIndex(0)
     setRevealAnswer(false)
   }, [filtered, singleView])
 
-  // Autoplay: reveal then advance (studyMode only)
-  useEffect(() => {
-    if (!studyMode || !autoplay) return
-    if (timerRef.current) window.clearTimeout(timerRef.current)
-    timerRef.current = window.setTimeout(() => {
-      setRevealAnswer((r) => {
-        if (!r) return true
-        setIndex((i) => (i + 1) % Math.max(filtered.length, 1))
-        return false
-      })
-    }, autoplaySeconds * 1000)
-    return () => {
-      if (timerRef.current) window.clearTimeout(timerRef.current)
-    }
-  }, [studyMode, autoplay, autoplaySeconds, revealAnswer, index, filtered.length])
-
   const current = filtered[index] || null
 
-  async function onUpload(e) {
-    const file = e.target.files?.[0]
-    if (!file) return
-    setError('')
-    try {
-      const ext = file.name.toLowerCase().split('.').pop()
+  function prevCard() {
+    if (!filtered.length) return
+    setIndex((i) => (i - 1 + filtered.length) % filtered.length)
+    setRevealAnswer(false)
+  }
+  function nextCard() {
+    if (!filtered.length) return
+    setIndex((i) => (i + 1) % filtered.length)
+    setRevealAnswer(false)
+  }
 
-      if (ext === 'json') {
-        const text = await file.text()
-        setAllData(normalizeRecords(JSON.parse(text)))
-        return
-      }
-
-      if (ext === 'csv') {
-        const text = await file.text()
-        const { data } = Papa.parse(text, { header: true, skipEmptyLines: true })
-        setAllData(normalizeRecords(data))
-        return
-      }
-
-      throw new Error('Please upload a CSV or JSON file.')
-    } catch (err) {
-      console.error(err)
-      setError('Failed to read that file. Please upload CSV or JSON with columns Company, Type, Question, Answer.')
+  // --- Mobile swipe handlers (works in Safari) ---
+  function onTouchStart(e) {
+    touchStartX.current = e.touches?.[0]?.clientX ?? null
+    touchDeltaX.current = 0
+  }
+  function onTouchMove(e) {
+    if (touchStartX.current == null) return
+    touchDeltaX.current = (e.touches?.[0]?.clientX ?? 0) - touchStartX.current
+  }
+  function onTouchEnd() {
+    if (touchStartX.current == null) return
+    const dx = touchDeltaX.current
+    touchStartX.current = null
+    touchDeltaX.current = 0
+    if (Math.abs(dx) > SWIPE_THRESHOLD) {
+      if (dx < 0) nextCard() // swipe left → next
+      else prevCard()        // swipe right → prev
     }
   }
 
-  function downloadJSON() {
-    const blob = new Blob([JSON.stringify(allData, null, 2)], { type: 'application/json' })
-    const a = document.createElement('a')
-    a.href = URL.createObjectURL(blob)
-    a.download = 'questions.json'
-    a.click()
-  }
-
-  // Reusable single-card navigation bar
-  function SingleCardNav({ compact = false }) {
-    return (
-      <div className={`flex items-center justify-center gap-2 ${compact ? '' : 'mt-2'}`}>
-        <button
-          className="px-3 py-1.5 border rounded-xl bg-white hover:bg-gray-50"
-          onClick={() => {
-            setIndex((i) => Math.max(0, i - 1))
-            setRevealAnswer(false)
-          }}
-        >
-          Prev
-        </button>
-        <button
-          className="px-3 py-1.5 border rounded-xl bg-white hover:bg-gray-50"
-          onClick={() => setRevealAnswer((r) => !r)}
-        >
-          {revealAnswer ? 'Hide Answer' : 'Show Answer'}
-        </button>
-        <button
-          className="px-3 py-1.5 border rounded-xl bg-white hover:bg-gray-50"
-          onClick={() => {
-            setIndex((i) => (i + 1) % Math.max(filtered.length, 1))
-            setRevealAnswer(false)
-          }}
-        >
-          Next
-        </button>
-      </div>
-    )
-  }
+  // Keyboard shortcuts (desktop): ← → for prev/next, Space toggles reveal
+  useEffect(() => {
+    const onKey = (e) => {
+      if (e.key === 'ArrowRight') nextCard()
+      if (e.key === 'ArrowLeft') prevCard()
+      if (e.code === 'Space') { e.preventDefault(); setRevealAnswer((r) => !r) }
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [filtered.length])
 
   return (
-    <div className="min-h-screen bg-gray-50 text-gray-900 p-4 md:p-8">
+    <div className="min-h-screen bg-gray-50 text-gray-900 p-4 md:p-6">
       <div className="max-w-6xl mx-auto space-y-6">
         <header className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
           <div>
             <h1 className="text-3xl md:text-4xl font-bold tracking-tight">Interview Flashcards</h1>
-            <p className="text-sm text-gray-600 mt-1">Load your CSV/JSON, then filter, sort, shuffle, and study.</p>
+            <p className="text-sm text-gray-600 mt-1">Filter, sort, shuffle, and study. Swipe on mobile.</p>
           </div>
+          {/* Toggle between single and multi-card view (default single) */}
           <div className="flex items-center gap-2">
-            <label className="inline-flex items-center gap-2 text-sm bg-white border rounded-xl px-3 py-2 shadow-sm">
-              <input type="file" accept=".csv,.json" onChange={onUpload} className="w-56" />
+            <label className="px-3 py-1.5 border rounded-xl bg-white inline-flex items-center gap-2 cursor-pointer select-none">
+              <input
+                type="checkbox"
+                checked={!singleView}
+                onChange={(e) => setSingleView(!e.target.checked)}
+              />
+              Multiple Cards (Grid)
             </label>
-            <button
-              className="px-3 py-2 border rounded-xl bg-white hover:bg-gray-50"
-              onClick={() => {
-                setCompany('all'); setType('all'); setSortBy('none'); setRandomized(false)
-              }}
-            >
-              Reset
-            </button>
-            <button className="px-3 py-2 border rounded-xl bg-white hover:bg-gray-50" onClick={downloadJSON}>
-              Download JSON
-            </button>
           </div>
         </header>
 
@@ -264,67 +218,10 @@ export default function App() {
           <div className="px-2 py-1 rounded-full bg-gray-200 inline-flex items-center gap-2">
             <span>{filtered.length}</span><span>cards</span>
           </div>
-
-          <button className="px-3 py-1.5 border rounded-xl bg-white hover:bg-gray-50"
-            onClick={() => setAllData(shuffleArray(allData))}
-          >
-            Shuffle dataset
-          </button>
-
-          {/* toggle single-card view */}
-          <label className="px-3 py-1.5 border rounded-xl bg-white hover:bg-gray-50 inline-flex items-center gap-2 cursor-pointer">
-            <input type="checkbox" checked={singleView} onChange={(e) => { setSingleView(e.target.checked); setStudyMode(false); }} />
-            Single Card View
-          </label>
-
-          <button className="px-3 py-1.5 border rounded-xl bg-white hover:bg-gray-50"
-            onClick={() => { setStudyMode(true); setSingleView(false); setIndex(0); setRevealAnswer(false) }}
-          >
-            Run Through It All
-          </button>
         </section>
 
-        {/* STUDY MODE: single-card + autoplay controls */}
-        {studyMode && (
-          <div className="space-y-3">
-            <div className="flex items-center justify-between">
-              <div className="text-sm text-gray-600">Card {filtered.length ? index + 1 : 0} / {filtered.length}</div>
-              <div className="flex items-center gap-4">
-                <label className="text-sm flex items-center gap-2">
-                  <input type="checkbox" checked={autoplay} onChange={(e) => setAutoplay(e.target.checked)} />
-                  Autoplay
-                </label>
-                <label className="text-xs text-gray-600 flex items-center gap-2">
-                  Interval: {autoplaySeconds}s
-                  <input type="range" min="3" max="15" value={autoplaySeconds}
-                    onChange={(e) => setAutoplaySeconds(parseInt(e.target.value))}
-                  />
-                </label>
-                <button className="px-3 py-1.5 border rounded-xl bg-white hover:bg-gray-50" onClick={() => setStudyMode(false)}>Exit</button>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1">
-              {current ? (
-                <FlashCard
-                  key={index}
-                  qa={current}
-                  reveal={revealAnswer}
-                  onToggle={() => setRevealAnswer((r) => !r)}
-                  baseMin={CARD_MIN_H}
-                  expandedMin={CARD_EXPANDED_MIN_H}
-                />
-              ) : (
-                <div className="text-center text-gray-500 p-8 border rounded-xl bg-white">No cards match your filters.</div>
-              )}
-            </div>
-
-            <SingleCardNav />
-          </div>
-        )}
-
-        {/* SINGLE VIEW (no autoplay): one card at a time with Prev/Next */}
-        {!studyMode && singleView && (
+        {/* SINGLE VIEW (default): one card with swipe + prev/next */}
+        {singleView && (
           <div className="space-y-3">
             <div className="text-sm text-gray-600">Card {filtered.length ? index + 1 : 0} / {filtered.length}</div>
             <div className="grid grid-cols-1">
@@ -336,18 +233,42 @@ export default function App() {
                   onToggle={() => setRevealAnswer((r) => !r)}
                   baseMin={CARD_MIN_H}
                   expandedMin={CARD_EXPANDED_MIN_H}
+                  onTouchStart={onTouchStart}
+                  onTouchMove={onTouchMove}
+                  onTouchEnd={onTouchEnd}
                 />
               ) : (
                 <div className="text-center text-gray-500 p-8 border rounded-xl bg-white">No cards match your filters.</div>
               )}
             </div>
-            <SingleCardNav compact />
+
+            <div className="flex items-center justify-center gap-3">
+              <button
+                className="px-4 py-2 border rounded-xl bg-white hover:bg-gray-50 active:scale-[0.99]"
+                onClick={prevCard}
+              >
+                Prev
+              </button>
+              <button
+                className="px-4 py-2 border rounded-xl bg-white hover:bg-gray-50 active:scale-[0.99]"
+                onClick={() => setRevealAnswer((r) => !r)}
+              >
+                {revealAnswer ? 'Hide Answer' : 'Show Answer'}
+              </button>
+              <button
+                className="px-4 py-2 border rounded-xl bg-white hover:bg-gray-50 active:scale-[0.99]"
+                onClick={nextCard}
+              >
+                Next
+              </button>
+            </div>
+            <p className="text-center text-xs text-gray-500">Tip: swipe left/right on the card on mobile</p>
           </div>
         )}
 
-        {/* GRID VIEW: all cards visible, consistent base height */}
-        {!studyMode && !singleView && (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {/* GRID VIEW (optional): all cards visible, consistent base height */}
+        {!singleView && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {filtered.map((qa, i) => (
               <FlashCard key={i} qa={qa} baseMin={CARD_MIN_H} expandedMin={CARD_EXPANDED_MIN_H} />
             ))}
@@ -360,19 +281,21 @@ export default function App() {
   )
 }
 
-function FlashCard({ qa, reveal, onToggle, baseMin = CARD_MIN_H, expandedMin = CARD_EXPANDED_MIN_H }) {
+function FlashCard({ qa, reveal, onToggle, baseMin = CARD_MIN_H, expandedMin = CARD_EXPANDED_MIN_H, onTouchStart, onTouchMove, onTouchEnd }) {
   const [flipped, setFlipped] = useState(false)
   const isRevealed = reveal ?? flipped
 
   // Height logic: same size when showing question; expands when revealing answer
   const minHeight = isRevealed ? expandedMin : baseMin
-
   const companyLabel = splitCompanies(qa.Company).join(' • ')
 
   return (
     <div
-      className="flip-container cursor-pointer"
+      className="flip-container cursor-pointer select-none"
       onClick={() => (onToggle ? onToggle() : setFlipped(!flipped))}
+      onTouchStart={onTouchStart}
+      onTouchMove={onTouchMove}
+      onTouchEnd={onTouchEnd}
       style={{ minHeight }}
     >
       <div className="relative flip-inner" style={{ transform: `rotateY(${isRevealed ? 180 : 0}deg)` }}>
@@ -384,8 +307,8 @@ function FlashCard({ qa, reveal, onToggle, baseMin = CARD_MIN_H, expandedMin = C
           <div className="text-xs uppercase tracking-wide text-gray-500">
             {companyLabel || '(No company)'} • {qa.Type || 'Type'}
           </div>
-          <div className="text-lg font-semibold leading-snug line-clamp-6">{qa.Question}</div>
-          <div className="text-xs text-gray-500 mt-auto">Click to reveal answer</div>
+          <div className="text-base sm:text-lg font-semibold leading-snug whitespace-pre-wrap">{qa.Question}</div>
+          <div className="text-xs text-gray-500 mt-auto">Tap to reveal answer</div>
         </div>
 
         {/* Back (Answer) */}
@@ -395,7 +318,7 @@ function FlashCard({ qa, reveal, onToggle, baseMin = CARD_MIN_H, expandedMin = C
         >
           <div className="text-xs uppercase tracking-wide text-gray-500">Answer</div>
           <div className="text-base leading-relaxed whitespace-pre-wrap">{qa.Answer || '(No answer provided)'}</div>
-          <div className="text-xs text-gray-500 mt-2">Click to flip back</div>
+          <div className="text-xs text-gray-500 mt-2">Tap to flip back</div>
         </div>
       </div>
     </div>
