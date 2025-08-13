@@ -1,0 +1,9 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* 3D flip helper */
+.flip-container { perspective: 1000px; }
+.flip-inner { transform-style: preserve-3d; transition: transform 0.5s; }
+.flip-front, .flip-back { backface-visibility: hidden; }
+.flip-back { transform: rotateY(180deg); }
