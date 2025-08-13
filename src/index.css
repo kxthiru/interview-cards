@@ -2,8 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
-/* 3D flip helper */
-.flip-container { perspective: 1000px; }
+/* Flip + mobile gesture friendliness */
+.flip-container { perspective: 1200px; touch-action: pan-y; } /* allow vertical scroll, horizontal swipe */
 .flip-inner { transform-style: preserve-3d; transition: transform 0.5s; }
-.flip-front, .flip-back { backface-visibility: hidden; }
+.flip-front, .flip-back { backface-visibility: hidden; -webkit-backface-visibility: hidden; }
 .flip-back { transform: rotateY(180deg); }

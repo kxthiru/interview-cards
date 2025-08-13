@@ -1,10 +1,10 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import bundledQuestions from './data/questions.json'
 
-// ------- Configurable card sizing -------
-const CARD_MIN_H = 260        // base min height (px) when showing the question
-const CARD_EXPANDED_MIN_H = 400 // expanded min height (px) when revealing the answer
-const SWIPE_THRESHOLD = 50     // px swipe distance to trigger next/prev
+// ------- Configurable card sizing / interactions -------
+const CARD_MIN_H = 280         // base min height (px) when showing the question
+const CARD_EXPANDED_MIN_H = 420 // expanded min height (px) when revealing the answer
+const SWIPE_THRESHOLD = 50      // px swipe distance to trigger next/prev
 
 function shuffleArray(arr) {
   const a = [...arr]
@@ -37,6 +37,7 @@ function normalizeRecords(rows) {
     .filter((r) => r.Question && r.Answer)
 }
 
+// Split a Company cell into multiple companies (comma/semicolon/newline)
 function splitCompanies(value) {
   const raw = String(value || '')
   return raw
@@ -54,23 +55,25 @@ export default function App() {
   const [randomized, setRandomized] = useState(false)
 
   // Views — default to SINGLE CARD view
-  const [singleView, setSingleView] = useState(true) // default ON
+  const [singleView, setSingleView] = useState(true)
 
   // Card interaction
   const [revealAnswer, setRevealAnswer] = useState(false)
   const [index, setIndex] = useState(0)
-  const [error, setError] = useState('')
+
+  // UI state
+  const [filtersOpen, setFiltersOpen] = useState(false)
 
   // Touch/swipe state
   const touchStartX = useRef(null)
   const touchDeltaX = useRef(0)
 
-  // Always load bundled data (works on GitHub Pages)
+  // Load bundled data so GitHub Pages always has content
   useEffect(() => {
     setAllData(normalizeRecords(bundledQuestions))
   }, [])
 
-  // Build company list from split tags
+  // Build company list from split company tags
   const companies = useMemo(() => {
     const set = new Set()
     for (const d of allData) splitCompanies(d.Company).forEach((c) => set.add(c))
@@ -98,7 +101,7 @@ export default function App() {
     return list
   }, [allData, company, type, sortBy, randomized])
 
-  // Reset position when list/view changes
+  // Reset position when the filtered list or view changes
   useEffect(() => {
     setIndex(0)
     setRevealAnswer(false)
@@ -117,7 +120,7 @@ export default function App() {
     setRevealAnswer(false)
   }
 
-  // --- Mobile swipe handlers (works in Safari) ---
+  // --- Mobile swipe handlers (Safari-friendly) ---
   function onTouchStart(e) {
     touchStartX.current = e.touches?.[0]?.clientX ?? null
     touchDeltaX.current = 0
@@ -149,81 +152,86 @@ export default function App() {
   }, [filtered.length])
 
   return (
-    <div className="min-h-screen bg-gray-50 text-gray-900 p-4 md:p-6">
-      <div className="max-w-6xl mx-auto space-y-6">
-        <header className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
-          <div>
-            <h1 className="text-3xl md:text-4xl font-bold tracking-tight">Interview Flashcards</h1>
-            <p className="text-sm text-gray-600 mt-1">Filter, sort, shuffle, and study. Swipe on mobile.</p>
+    <div className="min-h-screen text-slate-100 bg-[radial-gradient(1200px_600px_at_-10%_-10%,#1f2937_0%,transparent_60%),radial-gradient(800px_400px_at_120%_-20%,#0ea5e9_0%,transparent_50%),radial-gradient(700px_400px_at_50%_120%,#9333ea_0%,transparent_40%)] bg-slate-950">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-6 md:py-10 space-y-6">
+        {/* Header */}
+        <header className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="h-8 w-8 rounded-xl bg-white/10 border border-white/20 backdrop-blur" />
+            <h1 className="text-xl sm:text-2xl md:text-3xl font-semibold tracking-tight">Interview Flashcards</h1>
           </div>
-          {/* Toggle between single and multi-card view (default single) */}
+
+          {/* Right controls: mobile icon buttons, desktop inline */}
           <div className="flex items-center gap-2">
-            <label className="px-3 py-1.5 border rounded-xl bg-white inline-flex items-center gap-2 cursor-pointer select-none">
-              <input
-                type="checkbox"
-                checked={!singleView}
-                onChange={(e) => setSingleView(!e.target.checked)}
-              />
-              Multiple Cards (Grid)
+            {/* Mobile: filter FAB */}
+            <button
+              className="md:hidden h-10 w-10 rounded-xl bg-white/10 border border-white/20 backdrop-blur flex items-center justify-center active:scale-95"
+              onClick={() => setFiltersOpen(true)}
+              aria-label="Open filters"
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="22 3 2 3 10 12 10 19 14 21 14 12 22 3"></polygon></svg>
+            </button>
+
+            {/* Desktop: toggle grid */}
+            <label className="hidden md:flex items-center gap-2 px-3 py-2 rounded-xl bg-white/10 border border-white/20 backdrop-blur cursor-pointer select-none">
+              <input type="checkbox" className="accent-cyan-400" checked={!singleView} onChange={(e) => setSingleView(!e.target.checked)} />
+              <span className="text-sm">Multiple Cards</span>
             </label>
           </div>
         </header>
 
-        <section className="grid grid-cols-1 md:grid-cols-5 gap-3 items-end">
-          <div className="md:col-span-2">
-            <label className="text-xs text-gray-600">Company</label>
-            <select
-              className="w-full border rounded-xl bg-white px-3 py-2"
-              value={company}
-              onChange={(e) => setCompany(e.target.value)}
-            >
+        {/* Desktop filters row */}
+        <section className="hidden md:grid grid-cols-12 gap-3">
+          <div className="col-span-5">
+            <label className="text-xs text-slate-300">Company</label>
+            <select className="w-full px-3 py-2 rounded-xl bg-white/10 border border-white/20 backdrop-blur"
+              value={company} onChange={(e) => setCompany(e.target.value)}>
               <option value="all">All companies</option>
-              {companies.map((c) => (
-                <option key={c} value={c}>{c || '(blank)'}</option>
-              ))}
+              {companies.map((c) => <option key={c} value={c}>{c || '(blank)'}</option>)}
             </select>
           </div>
-          <div>
-            <label className="text-xs text-gray-600">Type</label>
-            <select
-              className="w-full border rounded-xl bg-white px-3 py-2"
-              value={type}
-              onChange={(e) => setType(e.target.value)}
-            >
+          <div className="col-span-3">
+            <label className="text-xs text-slate-300">Type</label>
+            <select className="w-full px-3 py-2 rounded-xl bg-white/10 border border-white/20 backdrop-blur"
+              value={type} onChange={(e) => setType(e.target.value)}>
               <option value="all">All</option>
               <option value="technical">Technical</option>
               <option value="behavioral">Behavioral</option>
             </select>
           </div>
-          <div>
-            <label className="text-xs text-gray-600">Sort by</label>
-            <select
-              className="w-full border rounded-xl bg-white px-3 py-2"
-              value={sortBy}
-              onChange={(e) => setSortBy(e.target.value)}
-            >
+          <div className="col-span-3">
+            <label className="text-xs text-slate-300">Sort by</label>
+            <select className="w-full px-3 py-2 rounded-xl bg-white/10 border border-white/20 backdrop-blur"
+              value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
               <option value="none">None</option>
               <option value="company">Company (A→Z)</option>
               <option value="type">Type (A→Z)</option>
               <option value="question">Question (A→Z)</option>
             </select>
           </div>
-          <div className="flex items-center gap-2 p-2 rounded-xl border bg-white">
-            <input id="rand" type="checkbox" checked={randomized} onChange={(e) => setRandomized(e.target.checked)} />
-            <label htmlFor="rand" className="text-sm">Randomize</label>
+          <div className="col-span-1 flex items-end">
+            <label className="w-full h-[42px] px-3 py-2 rounded-xl bg-white/10 border border-white/20 backdrop-blur inline-flex items-center gap-2 cursor-pointer select-none">
+              <input id="rand" type="checkbox" className="accent-cyan-400" checked={randomized} onChange={(e) => setRandomized(e.target.checked)} />
+              <span className="text-sm">Shuffle</span>
+            </label>
           </div>
         </section>
 
-        <section className="flex flex-wrap items-center gap-2 text-sm">
-          <div className="px-2 py-1 rounded-full bg-gray-200 inline-flex items-center gap-2">
-            <span>{filtered.length}</span><span>cards</span>
+        {/* Stats & view toggle (compact) */}
+        <section className="flex items-center gap-2 text-sm">
+          <div className="px-2 py-1 rounded-full bg-white/10 border border-white/20 backdrop-blur inline-flex items-center gap-2">
+            <span>{filtered.length}</span><span className="text-slate-300">cards</span>
           </div>
+          <label className="md:hidden ml-auto px-3 py-1.5 rounded-xl bg-white/10 border border-white/20 backdrop-blur inline-flex items-center gap-2 cursor-pointer select-none">
+            <input type="checkbox" className="accent-cyan-400" checked={!singleView} onChange={(e) => setSingleView(!e.target.checked)} />
+            <span>Grid</span>
+          </label>
         </section>
 
         {/* SINGLE VIEW (default): one card with swipe + prev/next */}
         {singleView && (
-          <div className="space-y-3">
-            <div className="text-sm text-gray-600">Card {filtered.length ? index + 1 : 0} / {filtered.length}</div>
+          <div className="space-y-4">
+            <div className="text-xs text-slate-300">Card {filtered.length ? index + 1 : 0} / {filtered.length}</div>
             <div className="grid grid-cols-1">
               {current ? (
                 <FlashCard
@@ -238,31 +246,16 @@ export default function App() {
                   onTouchEnd={onTouchEnd}
                 />
               ) : (
-                <div className="text-center text-gray-500 p-8 border rounded-xl bg-white">No cards match your filters.</div>
+                <div className="text-center text-slate-300 p-8 rounded-2xl bg-white/5 border border-white/10 backdrop-blur">No cards match your filters.</div>
               )}
             </div>
 
             <div className="flex items-center justify-center gap-3">
-              <button
-                className="px-4 py-2 border rounded-xl bg-white hover:bg-gray-50 active:scale-[0.99]"
-                onClick={prevCard}
-              >
-                Prev
-              </button>
-              <button
-                className="px-4 py-2 border rounded-xl bg-white hover:bg-gray-50 active:scale-[0.99]"
-                onClick={() => setRevealAnswer((r) => !r)}
-              >
-                {revealAnswer ? 'Hide Answer' : 'Show Answer'}
-              </button>
-              <button
-                className="px-4 py-2 border rounded-xl bg-white hover:bg-gray-50 active:scale-[0.99]"
-                onClick={nextCard}
-              >
-                Next
-              </button>
+              <button className="px-4 py-2 rounded-xl bg-white/10 border border-white/20 backdrop-blur hover:bg-white/15 active:scale-[0.99]" onClick={prevCard}>Prev</button>
+              <button className="px-4 py-2 rounded-xl bg-white/10 border border-white/20 backdrop-blur hover:bg-white/15 active:scale-[0.99]" onClick={() => setRevealAnswer((r) => !r)}>{revealAnswer ? 'Hide Answer' : 'Show Answer'}</button>
+              <button className="px-4 py-2 rounded-xl bg-white/10 border border-white/20 backdrop-blur hover:bg-white/15 active:scale-[0.99]" onClick={nextCard}>Next</button>
             </div>
-            <p className="text-center text-xs text-gray-500">Tip: swipe left/right on the card on mobile</p>
+            <p className="text-center text-xs text-slate-400">Swipe left/right on the card (mobile)</p>
           </div>
         )}
 
@@ -274,9 +267,59 @@ export default function App() {
             ))}
           </div>
         )}
-
-        {error && <div className="p-3 rounded-md bg-red-50 text-red-700 border">{error}</div>}
       </div>
+
+      {/* Mobile Filters Bottom Sheet */}
+      {filtersOpen && (
+        <div className="fixed inset-0 z-50" role="dialog" aria-modal="true">
+          <div className="absolute inset-0 bg-black/50" onClick={() => setFiltersOpen(false)} />
+          <div className="absolute inset-x-0 bottom-0 rounded-t-3xl bg-slate-900/80 backdrop-blur border-t border-white/10 p-4 pb-[env(safe-area-inset-bottom)]">
+            <div className="mx-auto max-w-6xl">
+              <div className="flex items-center justify-between mb-3">
+                <div className="h-1.5 w-12 rounded-full bg-white/20 mx-auto" />
+                <button className="h-9 w-9 rounded-xl bg-white/10 border border-white/20 flex items-center justify-center" onClick={() => setFiltersOpen(false)} aria-label="Close">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
+              </div>
+
+              <div className="grid grid-cols-1 gap-3">
+                <div>
+                  <label className="text-xs text-slate-300">Company</label>
+                  <select className="w-full px-3 py-2 rounded-xl bg-white/10 border border-white/20 backdrop-blur"
+                          value={company} onChange={(e) => setCompany(e.target.value)}>
+                    <option value="all">All companies</option>
+                    {companies.map((c) => <option key={c} value={c}>{c || '(blank)'}</option>)}
+                  </select>
+                </div>
+                <div>
+                  <label className="text-xs text-slate-300">Type</label>
+                  <select className="w-full px-3 py-2 rounded-xl bg-white/10 border border-white/20 backdrop-blur"
+                          value={type} onChange={(e) => setType(e.target.value)}>
+                    <option value="all">All</option>
+                    <option value="technical">Technical</option>
+                    <option value="behavioral">Behavioral</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="text-xs text-slate-300">Sort by</label>
+                  <select className="w-full px-3 py-2 rounded-xl bg-white/10 border border-white/20 backdrop-blur"
+                          value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
+                    <option value="none">None</option>
+                    <option value="company">Company (A→Z)</option>
+                    <option value="type">Type (A→Z)</option>
+                    <option value="question">Question (A→Z)</option>
+                  </select>
+                </div>
+                <label className="px-3 py-2 rounded-xl bg-white/10 border border-white/20 backdrop-blur inline-flex items-center gap-2 cursor-pointer select-none">
+                  <input id="rand2" type="checkbox" className="accent-cyan-400" checked={randomized} onChange={(e) => setRandomized(e.target.checked)} />
+                  <span className="text-sm">Shuffle</span>
+                </label>
+                <button className="mt-1 w-full px-4 py-2 rounded-xl bg-cyan-500 text-slate-900 font-medium active:scale-[0.99]" onClick={() => setFiltersOpen(false)}>Apply</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
@@ -298,27 +341,29 @@ function FlashCard({ qa, reveal, onToggle, baseMin = CARD_MIN_H, expandedMin = C
       onTouchEnd={onTouchEnd}
       style={{ minHeight }}
     >
-      <div className="relative flip-inner" style={{ transform: `rotateY(${isRevealed ? 180 : 0}deg)` }}>
+      <div className="relative flip-inner transition-transform duration-500" style={{ transform: `rotateY(${isRevealed ? 180 : 0}deg)` }}>
         {/* Front (Question) */}
         <div
-          className="rounded-2xl border bg-white shadow-sm p-4 flex flex-col gap-2 flip-front absolute inset-0"
+          className="rounded-3xl border border-white/10 bg-white/10 backdrop-blur-xl shadow-2xl ring-1 ring-white/10 p-5 sm:p-6 flex flex-col gap-3 flip-front absolute inset-0"
           style={{ minHeight }}
         >
-          <div className="text-xs uppercase tracking-wide text-gray-500">
+          <div className="text-xs uppercase tracking-wide text-slate-300">
             {companyLabel || '(No company)'} • {qa.Type || 'Type'}
           </div>
-          <div className="text-base sm:text-lg font-semibold leading-snug whitespace-pre-wrap">{qa.Question}</div>
-          <div className="text-xs text-gray-500 mt-auto">Tap to reveal answer</div>
+          <div className="text-lg sm:text-xl font-semibold leading-snug whitespace-pre-wrap">
+            {qa.Question}
+          </div>
+          <div className="text-xs text-slate-400 mt-auto">Tap to reveal answer</div>
         </div>
 
         {/* Back (Answer) */}
         <div
-          className="rounded-2xl border bg-white shadow-sm p-4 flex flex-col gap-2 flip-back"
+          className="rounded-3xl border border-white/10 bg-white/10 backdrop-blur-xl shadow-2xl ring-1 ring-white/10 p-5 sm:p-6 flex flex-col gap-3 flip-back"
           style={{ minHeight }}
         >
-          <div className="text-xs uppercase tracking-wide text-gray-500">Answer</div>
+          <div className="text-xs uppercase tracking-wide text-slate-300">Answer</div>
           <div className="text-base leading-relaxed whitespace-pre-wrap">{qa.Answer || '(No answer provided)'}</div>
-          <div className="text-xs text-gray-500 mt-2">Tap to flip back</div>
+          <div className="text-xs text-slate-400 mt-2">Tap to flip back</div>
         </div>
       </div>
     </div>
