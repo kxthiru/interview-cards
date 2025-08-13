@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react'
-import Papa from 'papaparse'
+import bundledQuestions from './data/questions.json';
 
 // ------- Configurable card sizing -------
 const CARD_MIN_H = 240         // base min height (px) when showing the question
@@ -66,16 +66,9 @@ export default function App() {
 
   // Load default dataset from /public/questions.json (relative path works on GitHub Pages)
   useEffect(() => {
-    (async () => {
-      try {
-        const res = await fetch('questions.json', { cache: 'no-store' })
-        if (res.ok) {
-          const data = await res.json()
-          setAllData(normalizeRecords(data))
-        }
-      } catch {}
-    })()
-  }, [])
+    // Always load the bundled data so the GitHub-hosted build has Q&A baked in
+    setAllData(normalizeRecords(bundledQuestions));
+  }, []);
 
   // Build the selectable company list by splitting multi-company cells
   const companies = useMemo(() => {
